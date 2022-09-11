@@ -16,11 +16,16 @@ function SalesCard() {
     const [sales, setSales] = useState<Sale[]>([]);
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/sales`)
+        //Formatando do data DataPicker para passar como argumento na Request
+        const dmin = mindate.toISOString().slice(0,10);
+        const dmax = maxdate.toISOString().slice(0,10);
+
+        axios.get(`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
             .then(response => {
                 setSales(response.data.content)
             })
-    }, [])
+            //[] executar function sempre que os mindate ou maxdate alterarem
+    }, [mindate, maxdate])
 
     return (
         <>
@@ -62,6 +67,7 @@ function SalesCard() {
                     <tbody>
                         {sales.map(sale => {
                             return (
+                                //Passar um identificador "key" para cada linha a ser criada
                                 <tr key={sale.id}>
                                     <td className="show992">{sale.id}</td>
                                     <td className="show576">{new Date(sale.data).toLocaleDateString()}</td>
@@ -71,7 +77,7 @@ function SalesCard() {
                                     <td>{sale.total.toFixed(2)}</td>
                                     <td>
                                         <div className="dsmeta-red-btn-container">
-                                            <NotificationButton />
+                                            <NotificationButton/>
                                         </div>
                                     </td>
                                 </tr>
